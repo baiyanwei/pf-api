@@ -1,13 +1,13 @@
-package com.secpro.platform.api.IAPIServer.http;
+package com.secpro.platform.api.server;
 
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-import com.secpro.platform.api.IAPIServer.IHandler;
+import com.secpro.platform.api.client.IClientResponseListener;
 
 /**
  * @author baiyanwei HTTP request handler
  */
-public interface IHttpHandler extends IHandler {
+public interface IHttpRequestHandler extends IClientResponseListener {
 	//
 	public Object DELETE(HttpRequest request, Object messageObj) throws Exception;
 
@@ -22,4 +22,10 @@ public interface IHttpHandler extends IHandler {
 	public Object GET(HttpRequest request, Object messageObj) throws Exception;
 
 	public Object POST(HttpRequest request, Object messageObj) throws Exception;
+	
+	/**
+	 * Get mapping path of handler 
+	 * @return
+	 */
+	public String getRequestMappingPath();
 }

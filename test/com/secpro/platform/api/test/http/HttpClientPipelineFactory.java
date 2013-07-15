@@ -1,4 +1,4 @@
-package com.secpro.platform.api.test;
+package com.secpro.platform.api.test.http;
 
 import static org.jboss.netty.channel.Channels.*;
 

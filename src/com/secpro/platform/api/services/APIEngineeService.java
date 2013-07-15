@@ -6,8 +6,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import com.secpro.platform.api.IAPIServer.IHandler;
-import com.secpro.platform.api.IAPIServer.IServer;
+import com.secpro.platform.api.server.IHttpRequestHandler;
+import com.secpro.platform.api.server.IServer;
 import com.secpro.platform.core.metrics.AbstractMetricMBean;
 import com.secpro.platform.core.metrics.MetricUtils;
 import com.secpro.platform.core.services.IConfiguration;
@@ -59,7 +59,7 @@ public class APIEngineeService extends AbstractMetricMBean implements IService {
 				IConfigurationElement[] handlerConfig = configElement.getChildren(HANDLER_CONF_TITLE);
 				if (handlerConfig != null && handlerConfig.length != 0) {
 					for (IConfigurationElement handlerElement : handlerConfig) {
-						IHandler handler = (IHandler) handlerElement.createExecutableExtension(IConfiguration.IMPLEMENT_CLASS_CONF_TITLE);
+						IHttpRequestHandler handler = (IHttpRequestHandler) handlerElement.createExecutableExtension(IConfiguration.IMPLEMENT_CLASS_CONF_TITLE);
 						//
 						handler.setID(handlerElement.getAttribute(IConfiguration.ID_CONF_TITLE));
 						handler.setName(handlerElement.getAttribute(IConfiguration.NAME_CONF_TITLE));

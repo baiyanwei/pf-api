@@ -7,8 +7,6 @@ import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
@@ -18,31 +16,25 @@ import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.jboss.netty.util.CharsetUtil;
 import org.json.JSONObject;
 
-import com.secpro.platform.api.IAPIServer.IHandler;
+import com.secpro.platform.api.client.Client;
+import com.secpro.platform.api.client.SimpleResponseListener;
 import com.secpro.platform.api.common.http.HttpConstant;
-import com.secpro.platform.core.services.ILife;
 
 /**
- * @author Martin Bai. a simple HTTP client ,And only support ASCII coding in
- *         URI. Jun 13, 2012
+ * @author baiyanwei 
+ * Jul 10, 2013 
+ * 
+ * a simple HTTP client ,And only support ASCII coding in URI.
  */
-public class HttpClient implements ILife {
+public class HttpClient extends Client {
 
-	private URI targetUri = null;
-	private IHandler hander = null;
-	private HashMap<String, String> dataMap = null;
-	private ClientBootstrap bootstrap = null;
-	private HttpClientPipelineFactory pipelineFactory = null;
-
-	public HttpClient(URI targetUri, IHandler hander, HashMap<String, String> dataMap) {
-		this.targetUri = targetUri;
-		this.hander = hander;
-		this.dataMap = dataMap;
+	public HttpClient() {
 	}
 
 	@Override
 	public void start() throws Exception {
 		// if has a host.
+		URI targetUri = new URI(this._clientConfiguration._endPointURI);
 		if (targetUri.getHost() == null) {
 			throw new Exception("invaild host.");
 		}
@@ -65,53 +57,49 @@ public class HttpClient implements ILife {
 		//
 		boolean ssl = scheme.equalsIgnoreCase(HttpConstant.HTTPS_SCHEME);
 		//
-		HttpRequest defaultHttpRequest = HttpClient.buildHttpRequest(this.targetUri, dataMap);
-		if (defaultHttpRequest == null) {
-			throw new Exception("Build HTTP request Exception");
+		if (this._clientConfiguration._parameterMap == null) {
+			this._clientConfiguration._parameterMap = new HashMap<String, String>();
+		}
+		HttpRequest defaultHttpRequest = null;
+		if (this._clientConfiguration._httpRequest == null) {
+			defaultHttpRequest = HttpClient.buildHttpRequest(targetUri, this._clientConfiguration._parameterMap);
+		} else {
+			defaultHttpRequest = (HttpRequest) this._clientConfiguration._httpRequest;
 		}
 		//
-		if (this.hander == null) {
-			this.hander = new SimpleHandler();
+		if (this._clientConfiguration._responseListener == null) {
+			this._clientConfiguration._responseListener = new SimpleResponseListener();
 		}
+		_factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 		// Configure the client.
-		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-		pipelineFactory = new HttpClientPipelineFactory(ssl, new HttpClientHandler(hander));
+		_bootstrap = new ClientBootstrap(_factory);
+		_pipelineFactory = new HttpClientPipelineFactory(ssl, new HttpClientHandler(this._clientConfiguration._responseListener));
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(pipelineFactory);
+		_bootstrap.setPipelineFactory(_pipelineFactory);
 		// Start the connection attempt.
-		ChannelFuture future = bootstrap.connect(new InetSocketAddress(targetUri.getHost(), port));
+		_future = _bootstrap.connect(new InetSocketAddress(targetUri.getHost(), port));
 		// Wait until the connection attempt succeeds or fails.
-		Channel channel = future.awaitUninterruptibly().getChannel();
-		if (!future.isSuccess()) {
+		_channel = _future.awaitUninterruptibly().getChannel();
+		if (!_future.isSuccess()) {
 			try {
-				pipelineFactory.shutdownTimer();
-				bootstrap.releaseExternalResources();
+				// check timeout handle exist or not
+				shutDownTimeoutTimer();
+				_bootstrap.releaseExternalResources();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			bootstrap = null;
-			pipelineFactory = null;
-			throw new Exception(future.getCause());
+			_bootstrap = null;
+			_pipelineFactory = null;
+			throw new Exception(_future.getCause());
 		}
 		// Send the HTTP request.
-		channel.write(defaultHttpRequest);
+		_channel.write(defaultHttpRequest);
 		// Wait for the server to close the connection.
-		channel.getCloseFuture().awaitUninterruptibly();
+		_channel.getCloseFuture().awaitUninterruptibly();
 		//
-		pipelineFactory.shutdownTimer();
-		bootstrap.releaseExternalResources();
-	}
-
-	@Override
-	public void stop() throws Exception {
-		if (pipelineFactory != null) {
-			pipelineFactory.shutdownTimer();
-		}
-		if (bootstrap != null) {
-			// Shut down executor threads to exit.
-			bootstrap.releaseExternalResources();
-
-		}
+		// check timeout handle exist or not
+		shutDownTimeoutTimer();
+		_bootstrap.releaseExternalResources();
 	}
 
 	/**

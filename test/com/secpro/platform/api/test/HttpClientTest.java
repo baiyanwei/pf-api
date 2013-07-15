@@ -1,10 +1,8 @@
 package com.secpro.platform.api.test;
 
-
-import java.net.URI;
-
 import org.junit.Test;
 
+import com.secpro.platform.api.client.ClientConfiguration;
 import com.secpro.platform.api.common.http.client.HttpClient;
 
 public class HttpClientTest {
@@ -14,8 +12,11 @@ public class HttpClientTest {
 
 		HttpClient httpClient = null;
 		try {
-			URI target = new URI("http://10.10.1.1");
-			httpClient = new HttpClient(target, null, null);
+			ClientConfiguration clientCfg=new ClientConfiguration();
+			clientCfg._endPointURI="http://localhost:8888/";
+			clientCfg._endPointPort=80;
+			httpClient = new HttpClient();
+			httpClient.configure(clientCfg);
 			httpClient.start();
 		} catch (Exception e) {
 			e.printStackTrace();

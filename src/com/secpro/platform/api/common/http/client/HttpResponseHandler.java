@@ -3,6 +3,7 @@ package com.secpro.platform.api.common.http.client;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpChunk;
@@ -68,4 +69,11 @@ public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
 			}
 		}
 	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+		// TODO Auto-generated method stub
+		Channels.fireExceptionCaught(ctx, e.getCause());
+	}
+	
 }

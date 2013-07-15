@@ -5,13 +5,13 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
-import com.secpro.platform.api.IAPIServer.IHandler;
+import com.secpro.platform.api.client.IClientResponseListener;
 
 public class HttpClientHandler extends SimpleChannelUpstreamHandler {
 
-	private IHandler handler = null;
+	private IClientResponseListener handler = null;
 
-	public HttpClientHandler(IHandler handler) {
+	public HttpClientHandler(IClientResponseListener handler) {
 		this.handler = handler;
 	}
 

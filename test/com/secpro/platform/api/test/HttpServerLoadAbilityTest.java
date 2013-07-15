@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.secpro.platform.api.test.http.HttpClient;
 import com.secpro.platform.log.utils.PlatformLogger;
 
 public class HttpServerLoadAbilityTest  {

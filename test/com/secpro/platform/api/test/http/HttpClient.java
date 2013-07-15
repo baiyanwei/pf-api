@@ -1,4 +1,4 @@
-package com.secpro.platform.api.test;
+package com.secpro.platform.api.test.http;
 
 import java.net.InetSocketAddress;
 import java.net.URI;

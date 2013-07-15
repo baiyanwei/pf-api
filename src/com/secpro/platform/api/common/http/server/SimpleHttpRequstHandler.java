@@ -4,35 +4,17 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-import com.secpro.platform.api.IAPIServer.http.IHttpHandler;
+import com.secpro.platform.api.server.IHttpRequestHandler;
+import com.secpro.platform.core.exception.PlatformException;
 import com.secpro.platform.log.utils.PlatformLogger;
 
-public class SimpleHttpRequstHandler implements IHttpHandler {
+public class SimpleHttpRequstHandler implements IHttpRequestHandler {
 	private static PlatformLogger logger = PlatformLogger.getLogger(SimpleHttpRequstHandler.class);
 	private String id = null;
 	private String name = null;
 	private String description = null;
 	@XmlElement(name = "path", type = String.class)
 	public String path = "";
-
-	//
-	@Override
-	public void fireSucceed(final Object messageObj) throws Exception {
-		new Thread() {
-			public void run() {
-				System.out.println(this.getName() + ">>>>" + messageObj);
-			}
-		}.start();
-	}
-
-	@Override
-	public void fireError(final Object messageObj) throws Exception {
-		new Thread() {
-			public void run() {
-				System.out.println(this.getName() + ">>>>" + messageObj);
-			}
-		}.start();
-	}
 
 	@Override
 	public Object DELETE(HttpRequest request, Object messageObj) throws Exception {
@@ -105,13 +87,25 @@ public class SimpleHttpRequstHandler implements IHttpHandler {
 	}
 
 	@Override
-	public String getKeyPoint() {
+	public String getRequestMappingPath() {
 		// TODO Auto-generated method stub
 		return this.path;
 	}
 
 	public String toString() {
 		return logger.MessageFormat("toString", name, path);
+	}
+
+	@Override
+	public void fireSucceed(Object messageObj) throws PlatformException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fireError(Object messageObj) throws PlatformException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

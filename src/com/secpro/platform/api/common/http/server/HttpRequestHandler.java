@@ -27,8 +27,8 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.util.CharsetUtil;
 
-import com.secpro.platform.api.IAPIServer.http.IHttpHandler;
 import com.secpro.platform.api.common.http.HttpConstant;
+import com.secpro.platform.api.server.IHttpRequestHandler;
 
 /**
  * @author baiyanwei HTTP request handler.
@@ -143,7 +143,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		}
 		path = path.trim();
 		//TODO ??
-		IHttpHandler handler = (IHttpHandler) this.httpServer.getHandler(path);
+		IHttpRequestHandler handler = (IHttpRequestHandler) this.httpServer.getHandler(path);
 		if (handler == null) {
 			responseStatus = HttpResponseStatus.NOT_FOUND;
 			content = responseStatus.getReasonPhrase();
