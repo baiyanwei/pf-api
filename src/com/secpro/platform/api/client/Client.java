@@ -78,7 +78,7 @@ public abstract class Client implements IClient {
 
 		}
 
-		theLogger.debug("clientClosed", _clientConfiguration._endPointURI, _clientConfiguration._endPointPort);
+		theLogger.debug("clientClosed", _clientConfiguration._endPointHost, _clientConfiguration._endPointPort);
 	}
 
 	/**

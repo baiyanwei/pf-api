@@ -2,18 +2,18 @@ package com.secpro.platform.api.client;
 
 import java.util.HashMap;
 
-
 /**
- * This class is used to pass all configuration data that is required by 
- * a client network connection.
- * @author baiyanwei
- * Jul 8, 2013
- *
+ * This class is used to pass all configuration data that is required by a
+ * client network connection.
+ * 
+ * @author baiyanwei Jul 8, 2013
+ * 
  */
 public class ClientConfiguration {
 
-	public String _endPointURI = "";
+	public String _endPointHost = "";
 	public int _endPointPort = 80;
+	public String _endPointPath="/";
 	public boolean _synchronousConnection = true;
 	public String _protocolType = "HTTP";
 	public int _readBufferSize = 1000000;
@@ -24,11 +24,13 @@ public class ClientConfiguration {
 	public boolean _isPrefetch = false;
 	public Object _httpRequest = null;
 	public IClientResponseListener _responseListener = null;
-	public HashMap<String,String> _parameterMap= null;
+	public HashMap<String, String> _parameterMap = null;
+	//The Client content text ,like HTTP client body.
+	public String _content = null;
 	public boolean _bEnableTLS = false;
 
 	public String toString() {
-		return _endPointURI + ":" + _endPointPort;
+		return _endPointHost + ":" + _endPointPort;
 	}
 
 }

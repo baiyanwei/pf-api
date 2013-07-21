@@ -13,8 +13,8 @@ public class HttpClientTest {
 		HttpClient httpClient = null;
 		try {
 			ClientConfiguration clientCfg=new ClientConfiguration();
-			clientCfg._endPointURI="http://localhost:8888/";
-			clientCfg._endPointPort=80;
+			clientCfg._endPointHost="localhost";
+			clientCfg._endPointPort=8888;
 			httpClient = new HttpClient();
 			httpClient.configure(clientCfg);
 			httpClient.start();
