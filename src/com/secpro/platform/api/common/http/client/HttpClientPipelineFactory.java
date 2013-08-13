@@ -26,6 +26,8 @@ import com.secpro.platform.api.common.http.securechat.SecureChatSslContextFactor
 public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 
 	private final boolean _ssl;
+	private final HashedWheelTimer _readTimer;
+	private final HashedWheelTimer _writeTimer;
 	private SimpleChannelUpstreamHandler _responseListener = null;
 	private int _readTimeoutSeconds = 30;
 	private int _writeTimeoutSeconds = 30;
@@ -35,6 +37,8 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 		this._responseListener = responseListener;
 		this._readTimeoutSeconds = readTimeoutSeconds;
 		this._writeTimeoutSeconds = writeTimeoutSeconds;
+		_readTimer=new HashedWheelTimer();
+		_writeTimer=new HashedWheelTimer();
 
 	}
 
@@ -52,11 +56,11 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 		// Enable Reading and writing timeOut.
 		if (_readTimeoutSeconds > 0) {
 			// 1 HTTP response timeOut timer.
-			pipeline.addFirst(Client.READ_TIME_OUT_PIPE_LINE, new ReadTimeoutHandler(new HashedWheelTimer(), _readTimeoutSeconds));
+			pipeline.addFirst(Client.READ_TIME_OUT_PIPE_LINE, new ReadTimeoutHandler(_readTimer, _readTimeoutSeconds));
 		}
 		if (_writeTimeoutSeconds > 0) {
 			// 2 HTTP request timeOut timer.
-			pipeline.addFirst(Client.WRITE_TIME_OUT_PIPE_LINE, new WriteTimeoutHandler(new HashedWheelTimer(), _writeTimeoutSeconds));
+			pipeline.addFirst(Client.WRITE_TIME_OUT_PIPE_LINE, new WriteTimeoutHandler(_writeTimer, _writeTimeoutSeconds));
 		}
 		// Enable HTTPS if necessary.
 		if (_ssl) {

@@ -13,7 +13,7 @@ import org.jboss.netty.util.CharsetUtil;
 
 public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
 	private boolean readingChunks = false;
-	private StringBuffer chucksContent = null;
+	private final StringBuffer chucksContent = new StringBuffer();
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -47,7 +47,7 @@ public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
 			// }
 			//
 			if (response.isChunked()) {
-				chucksContent = new StringBuffer();
+				chucksContent.setLength(0);
 				readingChunks = true;
 			} else {
 				ChannelBuffer content = response.getContent();
