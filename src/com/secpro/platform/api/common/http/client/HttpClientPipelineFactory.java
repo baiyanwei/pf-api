@@ -2,21 +2,18 @@ package com.secpro.platform.api.common.http.client;
 
 import static org.jboss.netty.channel.Channels.*;
 
-import javax.net.ssl.SSLEngine;
+import java.util.concurrent.TimeUnit;
+
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpClientCodec;
 import org.jboss.netty.handler.codec.http.HttpContentCompressor;
 import org.jboss.netty.handler.codec.http.HttpContentDecompressor;
-import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.timeout.ReadTimeoutHandler;
-import org.jboss.netty.handler.timeout.WriteTimeoutHandler;
 import org.jboss.netty.util.HashedWheelTimer;
+import org.jboss.netty.util.Timer;
 
-import com.secpro.platform.api.client.Client;
-import com.secpro.platform.api.common.http.securechat.SecureChatSslContextFactory;
 
 /**
  * @author baiyanwei Jul 8, 2013
@@ -25,13 +22,19 @@ import com.secpro.platform.api.common.http.securechat.SecureChatSslContextFactor
  */
 public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 
+	//This is static because we only need one for all our pipelines.
+    //I left the hard coded 5000 for now will figure that out if this fixes the always timing out issue.
+	private static Timer _timeoutTimer = new HashedWheelTimer();
+	private static ReadTimeoutHandler _readTimeoutHandler = new ReadTimeoutHandler(_timeoutTimer, 30000, TimeUnit.MILLISECONDS);
 	private final boolean _ssl;
+	private final HttpResponseHandler _responseHandler;
+	
+	/*
 	private final HashedWheelTimer _readTimer;
 	private final HashedWheelTimer _writeTimer;
-	private SimpleChannelUpstreamHandler _responseListener = null;
+	
 	private int _readTimeoutSeconds = 30;
 	private int _writeTimeoutSeconds = 30;
-
 	public HttpClientPipelineFactory(boolean ssl, SimpleChannelUpstreamHandler responseListener, int readTimeoutSeconds, int writeTimeoutSeconds) {
 		this._ssl = ssl;
 		this._responseListener = responseListener;
@@ -41,18 +44,20 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 		_writeTimer=new HashedWheelTimer();
 
 	}
-
 	public HttpClientPipelineFactory(boolean ssl, SimpleChannelUpstreamHandler responseListener) {
 		this(ssl, responseListener, 30, 30);
+	}*/
+	public HttpClientPipelineFactory(boolean ssl, HttpResponseHandler responseHandler) {
+		this._ssl = ssl;
+		this._responseHandler = responseHandler;
+
 	}
 
-	public HttpClientPipelineFactory() {
-		this(false, null, 30, 30);
-	}
 
 	public ChannelPipeline getPipeline() throws Exception {
 		// Create a default pipeline implementation.
 		ChannelPipeline pipeline = pipeline();
+		/*
 		// Enable Reading and writing timeOut.
 		if (_readTimeoutSeconds > 0) {
 			// 1 HTTP response timeOut timer.
@@ -68,7 +73,7 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 			SSLEngine engine = SecureChatSslContextFactory.getClientContext().createSSLEngine();
 			engine.setUseClientMode(true);
 			pipeline.addLast("ssl", new SslHandler(engine));
-		}
+		}*/
 		// 4 HTTP response and request EnCode DeCode.
 		pipeline.addLast("codec", new HttpClientCodec());
 
@@ -76,15 +81,13 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 		pipeline.addLast("deflater", new HttpContentCompressor(1));
 		// 6 automatic content decompression.
 		pipeline.addLast("inflater", new HttpContentDecompressor());
-
+		//
+		pipeline.addLast("timeout", _readTimeoutHandler);
 		// 7 HTTP handle HttpChunks.
 		// pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
-		// 8 HTTP response handler
-		pipeline.addLast("contentHandler", new HttpResponseHandler());
 		// 9 business operation handler
-		if (_responseListener != null) {
-			pipeline.addLast("responseListener", _responseListener);
-		}
+		pipeline.addLast("BOHandler", _responseHandler);
+		
 		return pipeline;
 	}
 }

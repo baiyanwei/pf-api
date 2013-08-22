@@ -79,7 +79,7 @@ public class HttpClient extends Client {
 		_factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 		// Configure the client.
 		_bootstrap = new ClientBootstrap(_factory);
-		_pipelineFactory = new HttpClientPipelineFactory(ssl, new HttpClientHandler(this._clientConfiguration._responseListener));
+		_pipelineFactory = new HttpClientPipelineFactory(ssl, new HttpResponseHandler(this));
 		// Set up the event pipeline factory.
 		_bootstrap.setPipelineFactory(_pipelineFactory);
 		// Start the connection attempt.
