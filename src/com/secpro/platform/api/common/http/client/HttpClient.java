@@ -38,7 +38,7 @@ public class HttpClient extends Client {
 		}
 		// if has a host.
 		if (this._clientConfiguration._endPointHost == null) {
-			throw new Exception("invaild _endPointHost.");
+			throw new Exception("invalid _endPointHost.");
 		}
 		// if here does't have a scheme in URI, default is HTTP.
 		String scheme = this._clientConfiguration._protocolType;
