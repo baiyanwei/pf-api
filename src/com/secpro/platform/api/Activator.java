@@ -3,7 +3,7 @@ package com.secpro.platform.api;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.secpro.platform.api.services.APIEngineeService;
+import com.secpro.platform.api.services.APIEngineService;
 import com.secpro.platform.core.services.ServiceHelper;
 import com.secpro.platform.log.utils.PlatformLogger;
 
@@ -22,7 +22,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		logger.info("#PL-API is started~");
-		ServiceHelper.registerService(new APIEngineeService());
+		ServiceHelper.registerService(new APIEngineService());
 	}
 
 	/*

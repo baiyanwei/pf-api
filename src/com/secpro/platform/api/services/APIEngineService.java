@@ -16,37 +16,52 @@ import com.secpro.platform.core.services.PropertyLoaderService;
 import com.secpro.platform.core.services.ServiceHelper;
 import com.secpro.platform.log.utils.PlatformLogger;
 
-public class APIEngineeService extends AbstractMetricMBean implements IService {
+/**
+ * @author baiyanwei Sep 24, 2013
+ * 
+ *         The HTTP Server engine,for starting the server from the configuration
+ *         in plug-in file.
+ * 
+ */
+public class APIEngineService extends AbstractMetricMBean implements IService {
 	final public String HANDLER_CONF_TITLE = "handler";
 	final public String SERVER_CONF_TITLE = "com.secpro.platform.api.pf_api_server";
 
-	private static PlatformLogger logger = PlatformLogger.getLogger(APIEngineeService.class);
+	final private static PlatformLogger theLogger = PlatformLogger.getLogger(APIEngineService.class);
 
 	public ArrayList<IServer> apiServersList = new ArrayList<IServer>();
 
 	@Override
 	public void start() throws Exception {
-		// TODO Auto-generated method stub
 		startupServers();
 		MetricUtils.registerMBean(this);
 	}
 
 	@Override
 	public void stop() throws Exception {
-		// TODO Auto-generated method stub
 		shutdownServers();
+		MetricUtils.registerMBean(this);
 	}
 
 	/**
 	 * start all API servers.
 	 */
 	private void startupServers() {
+		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(SERVER_CONF_TITLE);
+		startupServers(config);
+
+	}
+
+	public void startupServers(IConfigurationElement[] config) {
+		if (config == null || config.length == 0) {
+			return;
+		}
 		PropertyLoaderService propertyLoaderService = ServiceHelper.findService(PropertyLoaderService.class);
 		if (propertyLoaderService == null) {
 			System.err.println("Can't find the PropertyLoaderService, Server can't start without PropertyLoaderService.");
 			return;
 		}
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(SERVER_CONF_TITLE);
+		// register server from configuration.
 		for (IConfigurationElement configElement : config) {
 			try {
 				// Instance implement class .
@@ -67,22 +82,19 @@ public class APIEngineeService extends AbstractMetricMBean implements IService {
 						//
 						propertyLoaderService.loadExtensionProperties(handlerElement.getChildren(IConfiguration.PROPERTY_CONF_TITLE), handler);
 						server.addHandler(handler);
-						logger.info("registerHandler", handler.getID(), handler.getName(), server.getName());
+						theLogger.info("registerHandler", handler.getID(), handler.getName(), server.getName());
 					}
 				}
 				//
 				server.start();
 				this.apiServersList.add(server);
-				logger.info("registerServer", server.getName(),server.getDescription());
+				theLogger.info("registerServer", server.getName(), server.getDescription());
 			} catch (CoreException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				theLogger.exception(e1);
 			} catch (Throwable t) {
-				// TODO Auto-generated catch block
-				t.printStackTrace();
+				theLogger.exception(t);
 			}
 		}
-
 	}
 
 	/**

@@ -14,4 +14,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jboss.netty;bundle-version="3.4.2"
 Bundle-ClassPath: .
 Export-Package: com.secpro.platform.api.client,
- com.secpro.platform.api.common.http.client
+ com.secpro.platform.api.common.http.client,
+ com.secpro.platform.api.common.http.server,
+ com.secpro.platform.api.server

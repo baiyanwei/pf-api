@@ -23,6 +23,7 @@ import com.secpro.platform.log.utils.PlatformLogger;
 public abstract class Client implements IClient {
 	public final static String READ_TIME_OUT_PIPE_LINE = "readTimeout";
 	public final static String WRITE_TIME_OUT_PIPE_LINE = "writeTimeout";
+	public final static String NETWORK_ERROR_CONNECTION_REFUSED = "Connection refused";
 	//
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(Client.class);
 	protected ClientConfiguration _clientConfiguration = null;

@@ -96,7 +96,9 @@ public class HttpClient extends Client {
 			}
 			_bootstrap = null;
 			_pipelineFactory = null;
-			throw new Exception(_future.getCause());
+			//System.out.println(_future.getCause().getMessage());
+			//System.out.println(_future.getCause().getClass());
+			throw new Exception(_future.getCause().getMessage());
 		}
 		// Send the HTTP request.
 		_channel.write(defaultHttpRequest);

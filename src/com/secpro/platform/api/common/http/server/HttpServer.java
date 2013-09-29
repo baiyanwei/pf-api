@@ -52,7 +52,6 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 
 	@Override
 	public void addHandler(IHttpRequestHandler handler) throws Exception {
-		// TODO Auto-generated method stub
 		if (handler == null) {
 			return;
 		}
@@ -78,39 +77,33 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 	@Metric(description = "description of the server")
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return description;
 	}
 
 	@Metric(description = "server name")
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return this.name;
 	}
 
 	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
 		this.name = name;
 	}
 
 	@Override
 	public void setDescription(String description) {
-		// TODO Auto-generated method stub
 		this.description = description;
 	}
 
 	@Override
 	public void setID(String id) {
-		// TODO Auto-generated method stub
 		this.id = id;
 	}
 
 	@Metric(description = "server id")
 	@Override
 	public String getID() {
-		// TODO Auto-generated method stub
 		return this.id;
 	}
 
