@@ -88,8 +88,8 @@ public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		// TODO Auto-generated method stub
 		Channels.fireExceptionCaught(ctx, e.getCause());
+		doError(new PlatformException(e.getCause().getMessage(),e.getCause()));
 	}
 
 	private void doError(PlatformException exception) {

@@ -78,7 +78,7 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
 		pipeline.addLast("codec", new HttpClientCodec());
 
 		// 5 automatic content compression
-		pipeline.addLast("deflater", new HttpContentCompressor(1));
+		//pipeline.addLast("deflater", new HttpContentCompressor(1));
 		// 6 automatic content decompression.
 		pipeline.addLast("inflater", new HttpContentDecompressor());
 		//
