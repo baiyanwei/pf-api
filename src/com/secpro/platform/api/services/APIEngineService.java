@@ -88,6 +88,9 @@ public class APIEngineService extends AbstractMetricMBean implements IService {
 				//
 				server.start();
 				this.apiServersList.add(server);
+				if (server instanceof IService) {
+					ServiceHelper.registerService((IService) server, false, false);
+				}
 				theLogger.info("registerServer", server.getName(), server.getDescription());
 			} catch (CoreException e1) {
 				theLogger.exception(e1);

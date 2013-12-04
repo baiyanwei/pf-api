@@ -2,12 +2,12 @@ package com.secpro.platform.api.server;
 
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-import com.secpro.platform.api.client.IClientResponseListener;
+import com.secpro.platform.core.services.IConfiguration;
 
 /**
  * @author baiyanwei HTTP request handler
  */
-public interface IHttpRequestHandler extends IClientResponseListener {
+public interface IHttpRequestHandler extends IConfiguration {
 	//
 	public Object DELETE(HttpRequest request, Object messageObj) throws Exception;
 

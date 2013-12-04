@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlElement;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import com.secpro.platform.api.server.IHttpRequestHandler;
-import com.secpro.platform.core.exception.PlatformException;
 import com.secpro.platform.log.utils.PlatformLogger;
 
 public class SimpleHttpRequstHandler implements IHttpRequestHandler {
@@ -95,17 +94,4 @@ public class SimpleHttpRequstHandler implements IHttpRequestHandler {
 	public String toString() {
 		return logger.MessageFormat("toString", name, path);
 	}
-
-	@Override
-	public void fireSucceed(Object messageObj) throws PlatformException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fireError(Object messageObj) throws PlatformException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -17,9 +17,7 @@ import com.secpro.platform.core.metrics.MetricUtils;
 import com.secpro.platform.log.utils.PlatformLogger;
 
 /**
- * @author baiyanwei
- * Jul 11, 2013
- * HTTP Server
+ * @author baiyanwei Jul 11, 2013 HTTP Server
  */
 public class HttpServer extends AbstractMetricMBean implements IServer {
 	private static PlatformLogger logger = PlatformLogger.getLogger(HttpServer.class);
@@ -33,6 +31,8 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 	@Metric(description = "http server port")
 	public int requestTotal = 0;
 
+	public String ipAddress = null;
+
 	private HashMap<String, IHttpRequestHandler> pathMap = new HashMap<String, IHttpRequestHandler>();
 
 	@Override
@@ -41,7 +41,9 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 		// Set up the event pipeline factory.
 		bootstrap.setPipelineFactory(new HttpServerPipelineFactory(this));
 		// Bind and start to accept incoming connections.
-		bootstrap.bind(new InetSocketAddress(port));
+		InetSocketAddress inetAddress = new InetSocketAddress(port);
+		ipAddress = inetAddress.getAddress().getHostAddress();
+		bootstrap.bind(inetAddress);
 		MetricUtils.registerMBean(this);
 	}
 
@@ -114,5 +116,9 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 	@Metric(description = "Server running status")
 	public String serverStatus() {
 		return "everything is fine.";
+	}
+
+	public HashMap<String, IHttpRequestHandler> getHttpRequestHandlerMap() {
+		return this.pathMap;
 	}
 }
