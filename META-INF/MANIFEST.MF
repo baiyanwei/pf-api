@@ -16,4 +16,5 @@ Bundle-ClassPath: .
 Export-Package: com.secpro.platform.api.client,
  com.secpro.platform.api.common.http.client,
  com.secpro.platform.api.common.http.server,
- com.secpro.platform.api.server
+ com.secpro.platform.api.server,
+ com.secpro.platform.api.services

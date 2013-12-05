@@ -6,6 +6,8 @@ import static org.jboss.netty.handler.codec.http.HttpResponseStatus.*;
 import static org.jboss.netty.handler.codec.http.HttpVersion.*;
 
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -27,6 +29,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.util.CharsetUtil;
 
+import com.secpro.platform.api.client.InterfaceParameter;
 import com.secpro.platform.api.common.http.HttpConstant;
 import com.secpro.platform.api.server.IHttpRequestHandler;
 
@@ -37,7 +40,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	private HttpServer httpServer = null;
 	private HttpRequest request = null;
 	private boolean readingChunks = false;
-	
+
 	private List<Entry<String, String>> chunkTrailerList = new ArrayList<Entry<String, String>>();
 	/** Buffer that stores the response content */
 	private final StringBuilder contentBuf = new StringBuilder();
@@ -48,8 +51,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	}
 
 	@Override
-	public void channelDisconnected(ChannelHandlerContext ctx,
-			ChannelStateEvent e) throws Exception {
+	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		super.channelDisconnected(ctx, e);
 	}
 
@@ -58,6 +60,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		// package the HTTP basic request.
 		if (!readingChunks) {
 			HttpRequest request = this.request = (HttpRequest) e.getMessage();
+			// get remote address IP from caller.
+			try {
+				SocketAddress remoteAddress = ctx.getChannel().getRemoteAddress();
+				request.addHeader(InterfaceParameter.HttpHeaderParameter.REMOTE_HOST_ADDR_IP, ((InetSocketAddress) remoteAddress).getAddress().getHostAddress());
+			} catch (Throwable t) {
+			}
+			//
 			this.httpServer.requestTotal++;
 			//
 			if (is100ContinueExpected(request)) {
@@ -141,7 +150,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			path = path.substring(0, path.indexOf(HttpConstant.REQUEST_QUERY_SPLITE_CHAR));
 		}
 		path = path.trim();
-		//TODO ??
+		// TODO ??
 		IHttpRequestHandler handler = (IHttpRequestHandler) this.httpServer.getHandler(path);
 		if (handler == null) {
 			responseStatus = HttpResponseStatus.NOT_FOUND;

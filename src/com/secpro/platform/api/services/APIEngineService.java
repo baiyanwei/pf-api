@@ -24,8 +24,8 @@ import com.secpro.platform.log.utils.PlatformLogger;
  * 
  */
 public class APIEngineService extends AbstractMetricMBean implements IService {
-	final public String HANDLER_CONF_TITLE = "handler";
-	final public String SERVER_CONF_TITLE = "com.secpro.platform.api.pf_api_server";
+	final public static String HANDLER_CONF_TITLE = "handler";
+	final public static String SERVER_CONF_TITLE = "com.secpro.platform.api.pf_api_server";
 
 	final private static PlatformLogger theLogger = PlatformLogger.getLogger(APIEngineService.class);
 

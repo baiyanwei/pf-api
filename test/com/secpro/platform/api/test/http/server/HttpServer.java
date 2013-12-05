@@ -122,4 +122,12 @@ public class HttpServer extends AbstractMetricMBean implements IServer {
 	public String serverStatus() {
 		return "everything is fine.";
 	}
+	public static void main(String[] args){
+		try {
+			new HttpServer().start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
