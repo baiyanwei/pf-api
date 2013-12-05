@@ -50,7 +50,6 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx,
 			ChannelStateEvent e) throws Exception {
-		System.out.println(">>>>>");
 		super.channelDisconnected(ctx, e);
 	}
 

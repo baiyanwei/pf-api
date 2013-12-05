@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="pf_api_server" name="pf_api_server" schema="schema/pf_api_server.exsd"/>
+   <!--
    <extension point="com.secpro.platform.api.pf_api_server">
       <server id="api:http:9999" name="api:http:9999" description="the test api for platform" implement_class="com.secpro.platform.api.common.http.server.HttpServer">
          <property name="port" value="9999" />
@@ -9,5 +10,5 @@
                <property name="path" value="/abc" />
          </handler>
       </server>
-   </extension>
+   </extension>-->
 </plugin>
