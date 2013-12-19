@@ -148,7 +148,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			path = path.substring(0, path.indexOf(HttpConstant.REQUEST_QUERY_SPLITE_CHAR));
 		}
 		path = path.trim();
-		// TODO ??
+		//
 		IHttpRequestHandler handler = (IHttpRequestHandler) this.httpServer.getHandler(path);
 		if (handler == null) {
 			responseStatus = HttpResponseStatus.NOT_FOUND;
